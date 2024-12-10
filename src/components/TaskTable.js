@@ -6,7 +6,7 @@ import {
   TextField,
   Paper,
   Grid,
-} from "@material-ui/core";
+} from '@mui/material';
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const TaskTable = ({ tasks, onDelete, onEdit }) => {

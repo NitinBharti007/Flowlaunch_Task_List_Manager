@@ -1,5 +1,5 @@
 import React from "react";
-import { FormControl, InputLabel, Select, MenuItem, Box, Typography } from "@material-ui/core";
+import { FormControl, InputLabel, Select, MenuItem, Box, Typography } from '@mui/material';
 
 const FilterDropdown = ({ filter, setFilter }) => {
   return (
