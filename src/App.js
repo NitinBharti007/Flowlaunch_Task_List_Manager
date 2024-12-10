@@ -10,6 +10,7 @@ const App = () => {
   const [tasks, setTasks] = useState([]);
   const [filter, setFilter] = useState("");
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
   // Fetch tasks from API on component mount
   useEffect(() => {
@@ -19,16 +20,19 @@ const App = () => {
         const tasksWithStatus = response.data.slice(0, 20).map((task, index) => ({
           id: index + 1,
           title: task.title,
-          description: "N/A",
+          description: task.description || "N/A", // Handle empty description gracefully
           status: task.completed ? "Done" : "To Do",
         }));
         setTasks(tasksWithStatus);
+        setLoading(false); // Set loading to false once tasks are fetched
       } catch (error) {
         console.error("Error fetching tasks:", error);
+        toast.error("Failed to fetch tasks. Please try again.");
+        setLoading(false);
       }
     };
 
-    fetchTasks(); 
+    fetchTasks();
   }, []);
 
   // Handle task addition
@@ -41,12 +45,17 @@ const App = () => {
   // Handle task deletion
   const handleDeleteTask = (id) => {
     const updatedTasks = tasks.filter((task) => task.id !== id);
-    const renumberedTasks = updatedTasks.map((task, index) => ({
-      ...task,
-      id: index + 1,
-    }));
-    setTasks(renumberedTasks);
+    setTasks(updatedTasks);
     toast.success("Task deleted successfully!");
+  };
+
+  // Handle task editing
+  const handleEditTask = (editedTask) => {
+    const updatedTasks = tasks.map((task) =>
+      task.id === editedTask.id ? editedTask : task
+    );
+    setTasks(updatedTasks);
+    toast.success("Task updated successfully!");
   };
 
   // Filter tasks based on search and status
@@ -75,7 +84,11 @@ const App = () => {
         <FilterDropdown filter={filter} setFilter={setFilter} />
 
         {/* Task Table */}
-        <TaskTable tasks={filteredTasks} onDelete={handleDeleteTask} />
+        {loading ? (
+          <div className="text-center py-6">Loading tasks...</div>
+        ) : (
+          <TaskTable tasks={filteredTasks} onDelete={handleDeleteTask} onEdit={handleEditTask} />
+        )}
 
         {/* Add Task Form */}
         <AddTaskForm onAdd={handleAddTask} />

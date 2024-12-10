@@ -1,12 +1,5 @@
-import React from "react";
-import {
-  IconButton,
-  Select,
-  MenuItem,
-  TextField,
-  Paper,
-  Grid,
-} from '@mui/material';
+import React, { useState } from "react";
+import { IconButton, Select, MenuItem, TextField, Paper } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const TaskTable = ({ tasks, onDelete, onEdit }) => {
@@ -18,6 +11,21 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
     const editedTask = updatedTask.find((task) => task.id === id);
     onEdit(editedTask); // Trigger the edit handler with the updated task
   };
+
+  // Renumber task IDs dynamically
+  const renumberTasks = (tasks) => {
+    return tasks.map((task, index) => ({
+      ...task,
+      id: index + 1, // New ID will be based on the index (1-based index)
+    }));
+  };
+
+  // Handle task deletion
+  const handleDelete = (id) => {
+    onDelete(id); // Call the onDelete callback to remove the task
+  };
+
+  const updatedTasks = renumberTasks(tasks);
 
   return (
     <div className="my-4">
@@ -35,7 +43,7 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
               </tr>
             </thead>
             <tbody>
-              {tasks.map((task) => (
+              {updatedTasks.map((task) => (
                 <tr key={task.id} className="hover:bg-gray-100">
                   <td className="text-center py-3">{task.id}</td>
                   <td className="py-3">
@@ -61,8 +69,14 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
                       InputLabelProps={{
                         style: { color: "#333", fontSize: "14px" },
                       }}
-                      onFocus={(e) => (e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)")}
-                      onBlur={(e) => (e.target.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)")}
+                      onFocus={(e) =>
+                        (e.target.style.boxShadow =
+                          "0 4px 6px rgba(0, 0, 0, 0.1)")
+                      }
+                      onBlur={(e) =>
+                        (e.target.style.boxShadow =
+                          "0 2px 4px rgba(0, 0, 0, 0.1)")
+                      }
                     />
                   </td>
                   <td className="py-3">
@@ -87,8 +101,14 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
                       InputLabelProps={{
                         style: { color: "#333", fontSize: "14px" },
                       }}
-                      onFocus={(e) => (e.target.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)")}
-                      onBlur={(e) => (e.target.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)")}
+                      onFocus={(e) =>
+                        (e.target.style.boxShadow =
+                          "0 4px 6px rgba(0, 0, 0, 0.1)")
+                      }
+                      onBlur={(e) =>
+                        (e.target.style.boxShadow =
+                          "0 2px 4px rgba(0, 0, 0, 0.1)")
+                      }
                     />
                   </td>
                   <td className="text-center py-3">
@@ -115,7 +135,7 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
                   <td className="text-center py-3">
                     <IconButton
                       color="error"
-                      onClick={() => onDelete(task.id)}
+                      onClick={() => handleDelete(task.id)}
                       aria-label="delete"
                     >
                       <DeleteIcon />
@@ -130,8 +150,11 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
 
       {/* Mobile-friendly layout */}
       <div className="sm:hidden">
-        {tasks.map((task) => (
-          <div key={task.id} className="border border-gray-300 rounded-lg p-4 mb-4 shadow-lg">
+        {updatedTasks.map((task) => (
+          <div
+            key={task.id}
+            className="border border-gray-300 rounded-lg p-4 mb-4 shadow-lg"
+          >
             <div className="flex justify-between mb-2">
               <span className="font-semibold text-xl text-gray-700">ID:</span>
               <span className="text-gray-600">{task.id}</span>
@@ -143,7 +166,9 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
                 size="small"
                 fullWidth
                 value={task.title}
-                onChange={(e) => handleEdit(task.id, "title", e.target.value)}
+                onChange={(e) =>
+                  handleEdit(task.id, "title", e.target.value)
+                }
                 InputProps={{
                   style: {
                     fontSize: "16px",
@@ -158,13 +183,17 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
               />
             </div>
             <div className="mb-2">
-              <span className="font-semibold text-lg text-gray-700">Description:</span>
+              <span className="font-semibold text-lg text-gray-700">
+                Description:
+              </span>
               <TextField
                 variant="outlined"
                 size="small"
                 fullWidth
                 value={task.description}
-                onChange={(e) => handleEdit(task.id, "description", e.target.value)}
+                onChange={(e) =>
+                  handleEdit(task.id, "description", e.target.value)
+                }
                 InputProps={{
                   style: {
                     fontSize: "14px",
@@ -181,7 +210,9 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
               <span className="font-semibold text-lg text-gray-700">Status:</span>
               <Select
                 value={task.status}
-                onChange={(e) => handleEdit(task.id, "status", e.target.value)}
+                onChange={(e) =>
+                  handleEdit(task.id, "status", e.target.value)
+                }
                 size="small"
                 fullWidth
                 style={{
@@ -201,7 +232,7 @@ const TaskTable = ({ tasks, onDelete, onEdit }) => {
             <div className="flex justify-between items-center">
               <IconButton
                 color="error"
-                onClick={() => onDelete(task.id)}
+                onClick={() => handleDelete(task.id)}
                 aria-label="delete"
               >
                 <DeleteIcon />
