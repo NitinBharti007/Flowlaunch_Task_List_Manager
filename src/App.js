@@ -16,24 +16,25 @@ const App = () => {
     const fetchTasks = async () => {
       try {
         const response = await axios.get("https://jsonplaceholder.typicode.com/todos");
-        const initialTasks = response.data.slice(0, 20).map((task, index) => ({
+        const tasksWithStatus = response.data.slice(0, 20).map((task, index) => ({
           id: index + 1,
           title: task.title,
-          description: "N/A", // Adding a dummy description
+          description: "N/A",
           status: task.completed ? "Done" : "To Do",
         }));
-        setTasks(initialTasks);
+        setTasks(tasksWithStatus);
       } catch (error) {
         console.error("Error fetching tasks:", error);
       }
     };
-    fetchTasks();
+
+    fetchTasks(); 
   }, []);
 
   // Handle task addition
   const handleAddTask = (newTask) => {
-    newTask.id = tasks.length + 1; // Dynamically assign new ID
-    setTasks([...tasks, newTask]); // Add task to the list
+    newTask.id = tasks.length + 1;
+    setTasks([...tasks, newTask]);
     toast.success("Task added successfully!");
   };
 
@@ -44,21 +45,9 @@ const App = () => {
       ...task,
       id: index + 1,
     }));
-    setTasks(renumberedTasks); // Update tasks with renumbered IDs
+    setTasks(renumberedTasks);
     toast.success("Task deleted successfully!");
   };
-
-  // Handle task editing
-  // Handle task editing
-const handleEditTask = (updatedTask) => {
-  const updatedTasks = tasks.map((task) =>
-    task.id === updatedTask.id ? updatedTask : task
-  );
-  setTasks(updatedTasks); // Update the tasks state with the edited task
-  toast.success("Task updated successfully!"); // Optional toast for feedback
-};
-
-  
 
   // Filter tasks based on search and status
   const filteredTasks = tasks.filter(
@@ -69,26 +58,31 @@ const handleEditTask = (updatedTask) => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-6">
-      <div className="max-w-5xl mx-auto bg-white shadow-lg rounded-lg p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 p-4 sm:p-6">
+      <div className="max-w-7xl mx-auto bg-white shadow-lg rounded-lg p-6">
         <h1 className="text-4xl font-bold text-center mb-6 text-blue-700">Task List Manager</h1>
+
         {/* Search Bar */}
         <input
           type="text"
           placeholder="Search tasks..."
           value={search}
-          onChange={(e) => setSearch(e.target.value)} // Update search state on input change
-          className="w-full p-2 border rounded-md mb-4"
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full p-3 border rounded-md mb-4 text-lg focus:ring-2 focus:ring-blue-500"
         />
+
         {/* Filter Dropdown */}
         <FilterDropdown filter={filter} setFilter={setFilter} />
+
         {/* Task Table */}
-        <TaskTable tasks={filteredTasks} onDelete={handleDeleteTask} onEdit={handleEditTask} />
+        <TaskTable tasks={filteredTasks} onDelete={handleDeleteTask} />
+
         {/* Add Task Form */}
         <AddTaskForm onAdd={handleAddTask} />
       </div>
+
       {/* Toast Notifications */}
-      <ToastContainer />
+      <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
     </div>
   );
 };
