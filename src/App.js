@@ -8,8 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
-  const [filter, setFilter] = useState(""); // Filter by status
-  const [search, setSearch] = useState(""); // Search by title or description
+  const [filter, setFilter] = useState("");
+  const [search, setSearch] = useState("");
 
   // Fetch tasks from API on component mount
   useEffect(() => {
